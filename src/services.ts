@@ -65,7 +65,7 @@ export interface DiagnosticCollection extends Disposable {
 }
 
 export interface CompletionItemProvider {
-    provideCompletionItems(params: CompletionParams, token: CancellationToken): Thenable<CompletionItem[] | CompletionList>;
+    provideCompletionItems(params: CompletionParams, token: CancellationToken): Thenable<CompletionList>;
     resolveCompletionItem?(item: CompletionItem, token: CancellationToken): Thenable<CompletionItem>;
 }
 

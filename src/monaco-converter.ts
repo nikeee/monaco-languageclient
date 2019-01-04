@@ -748,20 +748,20 @@ export class ProtocolToMonacoConverter {
     asCompletionResult(result: CompletionItem[] | CompletionList | null | undefined): monaco.languages.CompletionList {
         if (!result) {
             return {
-                isIncomplete: false,
-                items: []
+                incomplete: false,
+                suggestions: []
             }
         }
         if (Array.isArray(result)) {
-            const items = result.map(item => this.asCompletionItem(item));
+            const suggestions = result.map(this.asCompletionItem.bind(this));
             return {
-                isIncomplete: false,
-                items
+                incomplete: false,
+                suggestions
             }
         }
         return {
-            isIncomplete: result.isIncomplete,
-            items: result.items.map(this.asCompletionItem.bind(this))
+            incomplete: result.isIncomplete,
+            suggestions: result.items.map(this.asCompletionItem.bind(this))
         }
     }
 

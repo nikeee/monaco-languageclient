@@ -117,11 +117,11 @@ export class MonacoToProtocolConverter {
         }
     }
 
-    asTriggerKind(triggerKind: monaco.languages.SuggestTriggerKind): CompletionTriggerKind {
+    asTriggerKind(triggerKind: monaco.languages.CompletionTriggerKind): CompletionTriggerKind {
         switch (triggerKind) {
-            case monaco.languages.SuggestTriggerKind.TriggerCharacter:
+            case monaco.languages.CompletionTriggerKind.TriggerCharacter:
                 return CompletionTriggerKind.TriggerCharacter;
-            case monaco.languages.SuggestTriggerKind.TriggerForIncompleteCompletions:
+            case monaco.languages.CompletionTriggerKind.TriggerForIncompleteCompletions:
                 return CompletionTriggerKind.TriggerForIncompleteCompletions;
             default:
                 return CompletionTriggerKind.Invoked;

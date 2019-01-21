@@ -88,8 +88,10 @@ export class MonacoWorkspace implements Workspace {
         const edit: monaco.languages.WorkspaceEdit = this.p2m.asWorkspaceEdit(workspaceEdit);
 
         // Collect all referenced models
-        const models: {[uri: string]: monaco.editor.IModel} = edit.edits.reduce(
-            (acc: {[uri: string]: monaco.editor.IModel}, currentEdit) => {
+        const models: {[uri: string]: monaco.editor.IModel} = !edit.edits
+        ? {}
+        : edit.edits.reduce(
+            (acc: {[uri: string]: monaco.editor.IModel | null}, currentEdit) => {
                 const textEdit = currentEdit as monaco.languages.ResourceTextEdit;
                 acc[textEdit.resource.toString()] = monaco.editor.getModel(textEdit.resource);
                 return acc;
@@ -102,7 +104,9 @@ export class MonacoWorkspace implements Workspace {
         }
 
         // Group edits by resource so we can batch them when applying
-        const editsByResource: {[uri: string]: IIdentifiedSingleEditOperation[]} = edit.edits.reduce(
+        const editsByResource: {[uri: string]: IIdentifiedSingleEditOperation[]} = !edit.edits
+        ? {}
+        : edit.edits.reduce(
             (acc: {[uri: string]: IIdentifiedSingleEditOperation[]}, currentEdit) => {
                 const textEdit = currentEdit as monaco.languages.ResourceTextEdit;
                 const uri = textEdit.resource.toString();

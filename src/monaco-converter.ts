@@ -182,18 +182,18 @@ export class MonacoToProtocolConverter {
     }
 
     protected fillPrimaryInsertText(target: CompletionItem, source: ProtocolCompletionItem): void {
-        let format: InsertTextFormat = InsertTextFormat.PlainText;
+
         let text: string | undefined;
         let range: Range | undefined;
-        if (source.textEdit) {
-            text = source.textEdit.text;
-            range = this.asRange(source.textEdit.range);
-        } else if (typeof source.insertText === 'string') {
-            text = source.insertText;
-        } else if (source.insertText) {
+
+        let format: InsertTextFormat = InsertTextFormat.PlainText;
+        if (source.insertTextRules !== undefined && (source.insertTextRules & monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet) === 0) {
             format = InsertTextFormat.Snippet;
             text = source.insertText.value;
         }
+        target.insertTextFormat = format;
+
+        text = source.insertText;
         if (source.range) {
             range = this.asRange(source.range);
         }

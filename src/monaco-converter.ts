@@ -773,11 +773,13 @@ export class ProtocolToMonacoConverter {
             result.documentationFormat = Is.string(item.documentation) ? undefined : item.documentation.kind;
         };
         if (item.filterText) { result.filterText = item.filterText; }
+
         let insertText = this.asCompletionInsertText(item);
         if (insertText) {
             result.insertText = insertText.text;
             result.range = insertText.range;
             result.fromEdit = insertText.fromEdit;
+            result.insertTextRules = monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet;
         }
         if (Is.number(item.kind)) {
             let [itemKind, original] = this.asCompletionItemKind(item.kind);
@@ -804,19 +806,24 @@ export class ProtocolToMonacoConverter {
         return [CompletionItemKind.Text, value];
     }
 
-    asCompletionInsertText(item: CompletionItem): { text: string | monaco.languages.SnippetString, range?: monaco.Range, fromEdit: boolean } | undefined {
+    asCompletionInsertText(item: CompletionItem): { text: string, range?: monaco.Range, fromEdit: boolean, isSnippet: boolean } | undefined {
         if (item.textEdit) {
             const range = this.asRange(item.textEdit.range)!;
             const value = item.textEdit.newText;
             const text = item.insertTextFormat === InsertTextFormat.Snippet ? { value } : value;
             return {
-                text, range, fromEdit: true
+                text: value,
+                range,
+                fromEdit: true,
+                isSnippet: item.insertTextFormat === InsertTextFormat.Snippet,
             };
         }
         if (item.insertText) {
-            const value = item.insertText;
-            const text = item.insertTextFormat === InsertTextFormat.Snippet ? { value } : value;
-            return { text, fromEdit: false };
+            return {
+                text: item.insertText,
+                fromEdit: false,
+                isSnippet: item.insertTextFormat === InsertTextFormat.Snippet,
+            };
         }
         return undefined;
     }
